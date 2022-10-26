@@ -39,6 +39,10 @@ type TokenizationError struct {
 	Length uint16
 }
 
+func (te TokenizationError) Exists() bool {
+	return te.Err != nil
+}
+
 func (TE TokenizationError) Print(runes []rune) {
 	fmt.Println(string(runes[TE.Start : TE.Start+uint64(TE.Length)]))
 }
@@ -145,7 +149,7 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 				return unicode.IsDigit(r) || unicode.IsLetter(r)
 			})
 			res = append(res, Token{SYMBOL, string(runes[i : i+uint64(n)]), i, uint16(n)})
-			i += uint64(n)
+			i += uint64(n)-1
 		}
 	}
 	return res, TokenizationError{}

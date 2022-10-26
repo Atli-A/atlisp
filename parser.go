@@ -35,7 +35,8 @@ func Parse(tokens []Token, runes []rune) *Expression {
 	fmt.Println(tokens)
 	res := Expression{}
 	if len(tokens) == 0 {
-		panic(errors.New("0 tokens given"))
+		return &Expression{}
+//		panic(errors.New("0 tokens given"))
 	}
 	str := string(runes[tokens[0].Index : tokens[len(tokens)-1].Index+uint64(tokens[len(tokens)-1].Length)])
 	fmt.Printf("Parsing: %s\n", str)
