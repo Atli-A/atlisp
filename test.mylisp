@@ -1,2 +1,2 @@
-(print (quote lol))
-(print (+ 123 -2))
+;(quote lol)
+(+ 123 -2)

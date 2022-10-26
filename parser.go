@@ -32,11 +32,12 @@ func ParseLoneToken(token Token) Expression {
 }
 
 func Parse(tokens []Token, runes []rune) *Expression {
+	fmt.Println(tokens)
 	res := Expression{}
 	if len(tokens) == 0 {
 		panic(errors.New("0 tokens given"))
 	}
-	str := string(runes[tokens[0].Index:tokens[len(tokens)-1].Index+uint64(tokens[len(tokens)-1].Length)])
+	str := string(runes[tokens[0].Index : tokens[len(tokens)-1].Index+uint64(tokens[len(tokens)-1].Length)])
 	fmt.Printf("Parsing: %s\n", str)
 	if tokens[0].Type != LPAREN {
 		if len(tokens) != 1 {
@@ -55,8 +56,8 @@ func Parse(tokens []Token, runes []rune) *Expression {
 				start := i
 				counts := 0
 				for ; ; i++ {
-//					fmt.Println(counts)
-//					tokens[i].Print(runes)
+					//					fmt.Println(counts)
+					//					tokens[i].Print(runes)
 					if tokens[i].Type == LPAREN {
 						counts++
 					} else if tokens[i].Type == RPAREN {

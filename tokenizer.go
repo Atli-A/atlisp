@@ -96,6 +96,10 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 		c := runes[i]
 		T, found := IdentifySingleCharTokens(c, i)
 		switch {
+		case c == ';':
+			for runes[i] != '\n' {
+				i++
+			}
 		case IsWhitespace(c):
 
 		case found:
@@ -106,16 +110,14 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 			var strint int
 			var str string
 			if c == '-' {
-				strint = ReadUntilFalse(runes[i+1:], unicode.IsDigit) + 1
-				str = string(runes[i : i+uint64(strint)])
-				fmt.Println("str " + str)
+				strint = ReadUntilFalse(runes[i+1:], unicode.IsDigit)
+				str = string(runes[i : i+uint64(strint)+1])
 			} else {
 				strint = ReadUntilFalse(runes[i:], unicode.IsDigit)
 				str = string(runes[i : i+uint64(strint)])
 			}
 
 			num, err := strconv.ParseInt(str, 10, 64)
-			fmt.Printf("num %d\n", i)
 			if err == nil {
 				res = append(res, Token{NUMBER, num, i, uint16(strint)})
 				i += uint64(strint)

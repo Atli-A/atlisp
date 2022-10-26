@@ -1,3 +1,9 @@
 package main
 
-import ()
+import (
+
+)
+
+func add(a Var, b Var) RuntimeError {
+	return RuntimeError{}
+}
