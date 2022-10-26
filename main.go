@@ -1,38 +1,48 @@
 package main
 
 import (
-	"fmt"
 	"bufio"
+	"fmt"
+	"io"
 	"os"
 )
 
 func Repl() {
-	stack := *new(Stack)
+	stack := Stack{}
+	stack.AddLayer(GenerateBuiltins())
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("hi")
 	for {
+		fmt.Println(stack)
 		fmt.Print("> ")
 		line, err := reader.ReadString('\n')
 		if err != nil {
+			if err == io.EOF {
+				fmt.Println()
+				return
+			}
 			fmt.Println(err)
+			fmt.Println("^^^^^^^^^^^")
+			continue
 		}
 		fmt.Println(line)
 		code := []rune(line)
 		tokenized, token_err := Tokenize(code)
 		if token_err.Exists() {
 			fmt.Println(err)
+			fmt.Println("^^^^^^^^^^^")
 			continue
 		}
-		fmt.Print(">>")
-		fmt.Println(tokenized)
+		fmt.Println(TokensToString(tokenized, code))
 		parsed := Parse(tokenized, code)
 		res, runtime_err := Eval(parsed, stack)
 		if runtime_err.Exists() {
 			fmt.Println(err)
+			fmt.Println("^^^^^^^^^^^")
 			continue
 		}
 		fmt.Println(res.Data)
-		
+
 	}
 
 }

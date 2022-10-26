@@ -29,8 +29,20 @@ type Token struct {
 	Length uint16
 }
 
+func (T Token) String(runes []rune) string {
+	return string(runes[T.Index : T.Index+uint64(T.Length)])
+}
+
 func (T Token) Print(runes []rune) {
 	fmt.Println(string(runes[T.Index : T.Index+uint64(T.Length)]))
+}
+
+func TokensToString(tokens []Token, runes []rune) string {
+	res := ""
+	for i := range tokens {
+		res += tokens[i].String(runes) + " "
+	}
+	return res
 }
 
 type TokenizationError struct {
@@ -99,6 +111,7 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 	for i := uint64(0); i < uint64(len(runes)); i++ {
 		c := runes[i]
 		T, found := IdentifySingleCharTokens(c, i)
+		fmt.Println(string(runes[i]))
 		switch {
 		case c == ';':
 			for runes[i] != '\n' {
@@ -124,32 +137,36 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 			num, err := strconv.ParseInt(str, 10, 64)
 			if err == nil {
 				res = append(res, Token{NUMBER, num, i, uint16(strint)})
-				i += uint64(strint)
+				if c == '-' {
+					i += uint64(strint)
+				} else {
+					i += uint64(strint) - 1
+				}
 			} else {
 				fmt.Println("illegal number starting symbol?")
 			}
 
 		case c == '"':
-			n := ReadUntilFalse(runes[i:],
+			n := ReadUntilFalse(runes[i+1:],
 				func(r rune) bool {
-					return r == '"'
+					return r != '"'
 				})
 			if n == -1 {
 				return nil, TokenizationError{
 					Err:    errors.New("No matching \" found"),
 					Start:  i,
-					Length: uint16(len(runes[i:])),
+					Length: uint16(n),
 				}
 			}
-			res = append(res, Token{STRING, string(runes[i+1 : i+1+uint64(n)]), i, uint16(n + 1)})
-			i += uint64(n)
+			res = append(res, Token{STRING, string(runes[i+1 : i+2+uint64(n)]), i, uint16(n + 1)})
+			i += uint64(n) + 1
 
 		default: // SYMBOL
 			n := ReadUntilFalse(runes[i:], func(r rune) bool {
 				return unicode.IsDigit(r) || unicode.IsLetter(r)
 			})
-			res = append(res, Token{SYMBOL, string(runes[i : i+uint64(n)]), i, uint16(n)})
-			i += uint64(n)-1
+			res = append(res, Token{SYMBOL, string(runes[i : i+uint64(n)+1]), i, uint16(n)+1})
+			i += uint64(n)
 		}
 	}
 	return res, TokenizationError{}

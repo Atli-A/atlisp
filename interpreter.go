@@ -18,13 +18,14 @@ func (re RuntimeError) Exists() bool {
 type VarType int32
 
 var VarTypes = struct {
-	FN     VarType
-	NUM    VarType
-	STRING VarType
-	SYMBOL VarType
-	MACRO  VarType
-	CONS   VarType
-}{0, 1, 2, 3, 4, 5}
+	FN      VarType
+	NUM     VarType
+	STRING  VarType
+	SYMBOL  VarType
+	MACRO   VarType
+	CONS    VarType
+	BUILTIN VarType
+}{0, 1, 2, 3, 4, 5, 6}
 
 type Var struct {
 	Data any
@@ -83,17 +84,19 @@ func (s Stack) Copy() Stack {
 	return res
 }
 
-func (s Stack) AddLayer(m map[string]Var) {
-	s = append(s, m)
+func (s *Stack) AddLayer(m map[string]Var) {
+	*s = append(*s, m)
 }
 
 func (s Stack) Lookup(name string) (Var, error) {
 	for i := len(s) - 1; i >= 0; i++ {
 		_, ok := s[i][name]
 		if ok {
+			fmt.Printf("found %s\n", name)
 			return s[i][name], nil
 		}
 	}
+	fmt.Printf("failed |%s|\n", name)
 	return Var{}, errors.New(fmt.Sprintf("Variable/Function %s not found", name))
 }
 
@@ -118,6 +121,16 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 		switch first.Type {
 		case VarTypes.MACRO:
 			fmt.Println("Macros are unsupported!")
+		case VarTypes.BUILTIN:
+			params := make([]Var, 0, len(expr.Children) - 1)
+			for i, _ := range expr.Children[1:] {
+				evalled, err := Eval(expr.Children[i+1], local)
+				if err.Exists() {
+					return Var{}, err
+				}
+				params = append(params, evalled)
+			}
+			return first.Data.(func(...Var) (Var, RuntimeError))(params...)
 		case VarTypes.FN:
 			fn := first.Data.(Function)
 			if len(fn.Params) != len(expr.Children)-1 {

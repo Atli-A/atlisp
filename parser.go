@@ -36,7 +36,7 @@ func Parse(tokens []Token, runes []rune) *Expression {
 	res := Expression{}
 	if len(tokens) == 0 {
 		return &Expression{}
-//		panic(errors.New("0 tokens given"))
+		//		panic(errors.New("0 tokens given"))
 	}
 	str := string(runes[tokens[0].Index : tokens[len(tokens)-1].Index+uint64(tokens[len(tokens)-1].Length)])
 	fmt.Printf("Parsing: %s\n", str)
@@ -63,7 +63,7 @@ func Parse(tokens []Token, runes []rune) *Expression {
 						counts++
 					} else if tokens[i].Type == RPAREN {
 						counts--
-						if counts <= 1 {
+						if counts <= 0 {
 							res.Children = append(res.Children, Parse(tokens[start:i+1], runes))
 							break
 						}
