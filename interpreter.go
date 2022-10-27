@@ -26,11 +26,16 @@ var VarTypes = struct {
 	CONS        VarType
 	BUILTIN     VarType
 	SPECIALFORM VarType
-}{0, 1, 2, 3, 4, 5, 6, 7}
+	NIL         VarType
+}{0, 1, 2, 3, 4, 5, 6, 7, 8}
 
 type Var struct {
 	Data any
 	Type VarType
+}
+
+func (v Var) String() string {
+	return fmt.Sprintf("%v", v.Data)
 }
 
 type Function struct {
@@ -43,12 +48,17 @@ type Cons struct {
 	Rest  Var
 }
 
+func (c Cons) String() string {
+	return fmt.Sprintf("(%v . %v)", c.First, c.Rest)
+}
+
 var (
 	SpecialFormNames = []string{
 		"quote",
 		"lambda",
 		"progn",
 		"def",
+		"if",
 	}
 )
 
@@ -66,18 +76,18 @@ func (s *Stack) AddLayer(m map[string]Var) {
 
 func (s Stack) Lookup(name string) (Var, error) {
 	if name == "nil" || name == "T" {
-		return Var{Type:VarTypes.SYMBOL, Data:name,}, nil
+		return Var{Type: VarTypes.SYMBOL, Data: name}, nil
 	}
 	for i := len(s) - 1; i >= 0; i-- {
-		fmt.Println("i", i)
-		fmt.Printf("name |%s|\n", name)
+//		fmt.Println("i", i)
+//		fmt.Printf("name |%s|\n", name)
 		_, ok := s[i][name]
 		if ok {
-			fmt.Printf("found %s\n", name)
+//			fmt.Printf("found %s\n", name)
 			return s[i][name], nil
 		}
 	}
-	fmt.Printf("failed |%s|\n", name)
+//	fmt.Printf("failed |%s|\n", name)
 	return Var{}, errors.New(fmt.Sprintf("Variable/Function %s not found", name))
 }
 
@@ -113,6 +123,7 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 			}
 			return first.Data.(func(...Var) (Var, RuntimeError))(params...)
 		case VarTypes.FN:
+			fmt.Println("-------calling function")
 			fn := first.Data.(Function)
 			if len(fn.Params) != len(expr.Children)-1 {
 				return Var{}, RuntimeError{
@@ -128,8 +139,8 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 				param_layer[name] = evalled
 			}
 			pass_stack := local.Copy()
-			pass_stack.AddLayer(param_layer)
-			return Eval(fn.Code, pass_stack)
+			fmt.Println("passing function stack: ", append(pass_stack, param_layer))
+			return Eval(fn.Code, append(pass_stack, param_layer))
 		case VarTypes.SPECIALFORM:
 			switch first.Data.(string) {
 			case "quote":
@@ -144,6 +155,10 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 			case "def":
 				// TODO ensure right number of args
 				return Def(*expr.Children[1], *expr.Children[2], local)
+			case "if":
+				// TODO ensure right number of args
+				return If(expr.Children[1], expr.Children[2], 
+							expr.Children[3], local)
 			}
 
 		default:
@@ -151,11 +166,10 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 				errors.New("Cannot use value of not macro or function to call"), 0, 0,
 			}
 		}
-
 	} else {
 		switch expr.Value.Type {
 		case VarTypes.SYMBOL:
-			if expr.Value.Data == "nil" {
+			if Contains[string]([]string{"nil", "true"}, expr.Value.Data.(string)) {
 				return expr.Value, RuntimeError{}
 			}
 			evals_to, err := local.Lookup(expr.Value.Data.(string))

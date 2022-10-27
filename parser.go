@@ -59,8 +59,8 @@ func Parse(tokens []Token, runes []rune) *Expression {
 				start := i
 				counts := 0
 				for ; ; i++ {
-					//					fmt.Println(counts)
-					//					tokens[i].Print(runes)
+					fmt.Println(counts)
+					tokens[i].Print(runes)
 					if tokens[i].Type == LPAREN {
 						counts++
 					} else if tokens[i].Type == RPAREN {

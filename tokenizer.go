@@ -11,16 +11,16 @@ import (
 type TokenType int32
 
 const (
-	NONE      TokenType = iota
-	LPAREN    TokenType = iota
-	RPAREN    TokenType = iota
-	QUOTE     TokenType = iota
-	BACKQUOTE TokenType = iota
-	COMMA     TokenType = iota
-	STRING    TokenType = iota
-	SYMBOL    TokenType = iota
-	NUMBER    TokenType = iota
-	SPECIALFORM    TokenType = iota
+	NONE        TokenType = iota
+	LPAREN      TokenType = iota
+	RPAREN      TokenType = iota
+	QUOTE       TokenType = iota
+	BACKQUOTE   TokenType = iota
+	COMMA       TokenType = iota
+	STRING      TokenType = iota
+	SYMBOL      TokenType = iota
+	NUMBER      TokenType = iota
+	SPECIALFORM TokenType = iota
 )
 
 type Token struct {
@@ -176,7 +176,7 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 			} else {
 				res = append(res, Token{SYMBOL, str, i, uint16(n)})
 			}
-			i += uint64(n)
+			i += uint64(n) -1
 		}
 	}
 	return res, TokenizationError{}

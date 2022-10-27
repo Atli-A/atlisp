@@ -14,6 +14,8 @@ var (
 		"cons": cons,
 		"car":  car,
 		"cdr":  cdr,
+		"print": print_,
+		"eq": eq,
 	}
 )
 
@@ -118,6 +120,34 @@ func cdr(vars ...Var) (Var, RuntimeError) {
 	}
 	return vars[0].Data.(Cons).Rest, RuntimeError{}
 }
+
+func print_(vars ...Var) (Var, RuntimeError) {
+	if len(vars) != 1 {
+		return Var{}, RuntimeError{
+			errors.New("print expects exactly 1 argument"), 0, 0,
+		}
+	}
+	fmt.Println(vars[0].Data)
+	return vars[0], RuntimeError{}
+}
+
+func eq(vars ...Var) (Var, RuntimeError) {
+	// TODO check len >= 1
+	first := vars[0]
+	for i := 1; i < len(vars); i++ {
+		if first != vars[i] {
+			return Var{
+				Data: nil,
+				Type: VarTypes.NIL,
+			}, RuntimeError{}
+		}
+	}
+	return Var{
+		Data: "true",
+		Type: VarTypes.SYMBOL,
+	}, RuntimeError{}
+}
+
 func GenerateBuiltins() map[string]Var {
 	res := make(map[string]Var)
 	for k, v := range builtins {
@@ -129,3 +159,4 @@ func GenerateBuiltins() map[string]Var {
 	}
 	return res
 }
+
