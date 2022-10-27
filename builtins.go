@@ -155,7 +155,6 @@ func GenerateBuiltins() map[string]Var {
 			Data: v,
 			Type: VarTypes.BUILTIN,
 		}
-		fmt.Println("hihih")
 	}
 	return res
 }

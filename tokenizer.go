@@ -112,7 +112,7 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 	for i := uint64(0); i < uint64(len(runes)); i++ {
 		c := runes[i]
 		T, found := IdentifySingleCharTokens(c, i)
-		fmt.Println(string(runes[i]))
+//		fmt.Println(string(runes[i]))
 		switch {
 		case c == ';':
 			for runes[i] != '\n' {

@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
+//	"fmt"
 )
 
 type Expression struct {
@@ -27,21 +27,20 @@ func ParseLoneToken(token Token) Expression {
 	case SPECIALFORM:
 		res.Value.Type = VarTypes.SPECIALFORM
 	default:
-		//		fmt.Println(token)
 		panic(errors.New("Unrecognized type"))
 	}
 	return res
 }
 
 func Parse(tokens []Token, runes []rune) *Expression {
-	fmt.Println(tokens)
+//	fmt.Println(tokens)
 	res := Expression{}
 	if len(tokens) == 0 {
 		return &Expression{}
 		//		panic(errors.New("0 tokens given"))
 	}
-	str := string(runes[tokens[0].Index : tokens[len(tokens)-1].Index+uint64(tokens[len(tokens)-1].Length)])
-	fmt.Printf("Parsing: %s\n", str)
+//	str := string(runes[tokens[0].Index : tokens[len(tokens)-1].Index+uint64(tokens[len(tokens)-1].Length)])
+//	fmt.Printf("Parsing: %s\n", str)
 	if tokens[0].Type != LPAREN {
 		if len(tokens) != 1 {
 			panic(errors.New("No Left Paren but mulitple tokens found"))
@@ -54,13 +53,13 @@ func Parse(tokens []Token, runes []rune) *Expression {
 		}
 		res.Children = make([]*Expression, 0)
 		for i := 1; i < len(tokens)-1; i++ {
-			tokens[i].Print(runes)
+//			tokens[i].Print(runes)
 			if tokens[i].Type == LPAREN {
 				start := i
 				counts := 0
 				for ; ; i++ {
-					fmt.Println(counts)
-					tokens[i].Print(runes)
+//					fmt.Println(counts)
+//					tokens[i].Print(runes)
 					if tokens[i].Type == LPAREN {
 						counts++
 					} else if tokens[i].Type == RPAREN {
@@ -79,6 +78,6 @@ func Parse(tokens []Token, runes []rune) *Expression {
 			res.Children[i].Parent = &res
 		}
 	}
-	fmt.Printf("Finished %s\n", str)
+//	fmt.Printf("Finished %s\n", str)
 	return &res
 }

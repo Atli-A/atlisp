@@ -79,15 +79,11 @@ func (s Stack) Lookup(name string) (Var, error) {
 		return Var{Type: VarTypes.SYMBOL, Data: name}, nil
 	}
 	for i := len(s) - 1; i >= 0; i-- {
-//		fmt.Println("i", i)
-//		fmt.Printf("name |%s|\n", name)
 		_, ok := s[i][name]
 		if ok {
-//			fmt.Printf("found %s\n", name)
 			return s[i][name], nil
 		}
 	}
-//	fmt.Printf("failed |%s|\n", name)
 	return Var{}, errors.New(fmt.Sprintf("Variable/Function %s not found", name))
 }
 
@@ -95,14 +91,8 @@ var (
 	GlobalStack *Stack
 )
 
-func Init() {
-	// Add builtins
-	// Add other stdlib
-
-}
-
 func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
-	fmt.Println(expr)
+//	fmt.Println(expr)
 	local = local.Copy()
 	if expr.Children != nil {
 		first, err := Eval(expr.Children[0], local)
@@ -123,7 +113,6 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 			}
 			return first.Data.(func(...Var) (Var, RuntimeError))(params...)
 		case VarTypes.FN:
-			fmt.Println("-------calling function")
 			fn := first.Data.(Function)
 			if len(fn.Params) != len(expr.Children)-1 {
 				return Var{}, RuntimeError{
@@ -139,7 +128,6 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 				param_layer[name] = evalled
 			}
 			pass_stack := local.Copy()
-			fmt.Println("passing function stack: ", append(pass_stack, param_layer))
 			return Eval(fn.Code, append(pass_stack, param_layer))
 		case VarTypes.SPECIALFORM:
 			switch first.Data.(string) {
@@ -173,8 +161,6 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 				return expr.Value, RuntimeError{}
 			}
 			evals_to, err := local.Lookup(expr.Value.Data.(string))
-			fmt.Println("----")
-			fmt.Println(evals_to)
 			if err != nil {
 				return Var{}, RuntimeError{err, 0, 0}
 			}

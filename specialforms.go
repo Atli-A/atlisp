@@ -40,9 +40,6 @@ func sliceToConsQuote(exprs []*Expression) (Var, RuntimeError) {
 }
 
 func Quote(expr Expression) (Var, RuntimeError) { // TODO handle expression
-	fmt.Println("----")
-	fmt.Println(expr)
-	fmt.Println("----")
 	if expr.Children == nil {
 		return expr.Value, RuntimeError{}
 	}
