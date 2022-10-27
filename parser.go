@@ -24,6 +24,8 @@ func ParseLoneToken(token Token) Expression {
 		res.Value.Type = VarTypes.NUM
 	case SYMBOL:
 		res.Value.Type = VarTypes.SYMBOL
+	case SPECIALFORM:
+		res.Value.Type = VarTypes.SPECIALFORM
 	default:
 		//		fmt.Println(token)
 		panic(errors.New("Unrecognized type"))

@@ -12,9 +12,8 @@ var (
 		"*": multiply,
 		// TODO divide
 		"cons": cons,
-		"car": car,
-		"cdr": cdr,
-
+		"car":  car,
+		"cdr":  cdr,
 	}
 )
 

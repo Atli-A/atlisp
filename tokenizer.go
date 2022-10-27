@@ -20,6 +20,7 @@ const (
 	STRING    TokenType = iota
 	SYMBOL    TokenType = iota
 	NUMBER    TokenType = iota
+	SPECIALFORM    TokenType = iota
 )
 
 type Token struct {
@@ -168,7 +169,13 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 			if n == 0 { // why does this work omg TODO
 				n = 1
 			}
-			res = append(res, Token{SYMBOL, string(runes[i : i+uint64(n)]), i, uint16(n)})
+			str := string(runes[i : i+uint64(n)])
+			if Contains[string](SpecialFormNames, str) {
+				// Check for special form
+				res = append(res, Token{SPECIALFORM, str, i, uint16(n)})
+			} else {
+				res = append(res, Token{SYMBOL, str, i, uint16(n)})
+			}
 			i += uint64(n)
 		}
 	}

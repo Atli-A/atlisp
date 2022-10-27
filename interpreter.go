@@ -44,41 +44,11 @@ type Cons struct {
 }
 
 var (
-	SpecialForms = map[string]any{
-		"quote": func(v Var) (Var, RuntimeError) { // TODO handle expression
-			return v, RuntimeError{}
-		},
-		"lambda": func(expr *Expression, commands []*Expression) (Var, RuntimeError) {
-			Params := make([]string, len(expr.Children))
-			for i := range expr.Children {
-				// TODO assert that the children are all symbols else error
-				Params[i] = expr.Children[i].Value.Data.(string) // the string of the name
-			}
-			Code := &Expression{
-				Parent:   nil, //TODO
-				Children: commands,
-				Value:    Var{Data: "progn", Type: VarTypes.SYMBOL},
-				Index:    0, //TODO
-				Length:   0, // TODO
-			}
-			return Var{
-				Data: Function{
-					Params: Params,
-					Code:   Code,
-				},
-				Type: VarTypes.FN,
-			}, RuntimeError{}
-
-		},
-		"progn": func(commands []*Expression, local Stack) (Var, RuntimeError) {
-			for i := 0; i < len(commands)-1; i++ {
-				_, err := Eval(commands[i], local)
-				if err.Exists() {
-					return Var{}, err
-				}
-			}
-			return Eval(commands[len(commands)-1], local)
-		},
+	SpecialFormNames = []string{
+		"quote",
+		"lambda",
+		"progn",
+		"def",
 	}
 )
 
@@ -95,6 +65,9 @@ func (s *Stack) AddLayer(m map[string]Var) {
 }
 
 func (s Stack) Lookup(name string) (Var, error) {
+	if name == "nil" || name == "T" {
+		return Var{Type:VarTypes.SYMBOL, Data:name,}, nil
+	}
 	for i := len(s) - 1; i >= 0; i-- {
 		fmt.Println("i", i)
 		fmt.Printf("name |%s|\n", name)
@@ -158,10 +131,21 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 			pass_stack.AddLayer(param_layer)
 			return Eval(fn.Code, pass_stack)
 		case VarTypes.SPECIALFORM:
-			switch (first.Data.(string)) {
+			switch first.Data.(string) {
 			case "quote":
-//				return SpecialForms["quote"]
+				return Quote(*expr.Children[1])
+				// TODO ensure right number of args
+			case "progn":
+				// TODO ensure except 0 args
+				return Progn(expr.Children[1:], local)
+			case "lambda":
+				// TODO ensure right number of args
+				return Lambda(expr.Children[1], expr.Children[2:])
+			case "def":
+				// TODO ensure right number of args
+				return Def(*expr.Children[1], *expr.Children[2], local)
 			}
+
 		default:
 			return Var{}, RuntimeError{
 				errors.New("Cannot use value of not macro or function to call"), 0, 0,
@@ -171,6 +155,9 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 	} else {
 		switch expr.Value.Type {
 		case VarTypes.SYMBOL:
+			if expr.Value.Data == "nil" {
+				return expr.Value, RuntimeError{}
+			}
 			evals_to, err := local.Lookup(expr.Value.Data.(string))
 			fmt.Println("----")
 			fmt.Println(evals_to)
