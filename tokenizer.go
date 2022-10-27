@@ -163,9 +163,12 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 
 		default: // SYMBOL
 			n := ReadUntilFalse(runes[i:], func(r rune) bool {
-				return unicode.IsDigit(r) || unicode.IsLetter(r)
+				return (unicode.IsDigit(r) || unicode.IsLetter(r)) && !unicode.IsSpace(r)
 			})
-			res = append(res, Token{SYMBOL, string(runes[i : i+uint64(n)+1]), i, uint16(n)+1})
+			if n == 0 { // why does this work omg TODO
+				n = 1
+			}
+			res = append(res, Token{SYMBOL, string(runes[i : i+uint64(n)]), i, uint16(n)})
 			i += uint64(n)
 		}
 	}

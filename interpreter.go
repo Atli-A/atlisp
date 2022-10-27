@@ -18,14 +18,15 @@ func (re RuntimeError) Exists() bool {
 type VarType int32
 
 var VarTypes = struct {
-	FN      VarType
-	NUM     VarType
-	STRING  VarType
-	SYMBOL  VarType
-	MACRO   VarType
-	CONS    VarType
-	BUILTIN VarType
-}{0, 1, 2, 3, 4, 5, 6}
+	FN          VarType
+	NUM         VarType
+	STRING      VarType
+	SYMBOL      VarType
+	MACRO       VarType
+	CONS        VarType
+	BUILTIN     VarType
+	SPECIALFORM VarType
+}{0, 1, 2, 3, 4, 5, 6, 7}
 
 type Var struct {
 	Data any
@@ -37,9 +38,14 @@ type Function struct {
 	Code   *Expression
 }
 
+type Cons struct {
+	First Var
+	Rest  Var
+}
+
 var (
 	SpecialForms = map[string]any{
-		"quote": func(v Var) (Var, RuntimeError) {
+		"quote": func(v Var) (Var, RuntimeError) { // TODO handle expression
 			return v, RuntimeError{}
 		},
 		"lambda": func(expr *Expression, commands []*Expression) (Var, RuntimeError) {
@@ -89,7 +95,9 @@ func (s *Stack) AddLayer(m map[string]Var) {
 }
 
 func (s Stack) Lookup(name string) (Var, error) {
-	for i := len(s) - 1; i >= 0; i++ {
+	for i := len(s) - 1; i >= 0; i-- {
+		fmt.Println("i", i)
+		fmt.Printf("name |%s|\n", name)
 		_, ok := s[i][name]
 		if ok {
 			fmt.Printf("found %s\n", name)
@@ -122,7 +130,7 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 		case VarTypes.MACRO:
 			fmt.Println("Macros are unsupported!")
 		case VarTypes.BUILTIN:
-			params := make([]Var, 0, len(expr.Children) - 1)
+			params := make([]Var, 0, len(expr.Children)-1)
 			for i, _ := range expr.Children[1:] {
 				evalled, err := Eval(expr.Children[i+1], local)
 				if err.Exists() {
@@ -149,6 +157,11 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 			pass_stack := local.Copy()
 			pass_stack.AddLayer(param_layer)
 			return Eval(fn.Code, pass_stack)
+		case VarTypes.SPECIALFORM:
+			switch (first.Data.(string)) {
+			case "quote":
+//				return SpecialForms["quote"]
+			}
 		default:
 			return Var{}, RuntimeError{
 				errors.New("Cannot use value of not macro or function to call"), 0, 0,
