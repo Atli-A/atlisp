@@ -28,25 +28,26 @@ can be declared with
 ### Function Types
 functions signatures are now like this:
 ```lisp
-(lambda ((var1 type1) (var2 type2)))
+(lambda ((var1 type1) (var2 type2)) do-stuff)
 ```
 have the parameters, their types, and the return type. All of these types can be sum types
 varargs are supported. 
 ```lisp
-(lambda ((n u8) (str string) (va slice-u8))) ; example
+(lambda ((n u8) (str string) (va slice-u8)) do-stuff) ; example
 ```
 
 ### Slice Types
 cons is replaced with slices probably
-slice variable signatures are like this ??? 
+
+slice variable signatures are like this: `[]u8`
 
 ### Strings
 ????
 
 ### Reflection
-var.type returns a type 
-how does this work for functions?
-thats a TODO 
+`var.type` returns a `type` 
+
+how does this work for functions? now thats a TODO 
 
 ### Typed Macros
 TODO?? Macros rearrange AND evaluate code
@@ -54,6 +55,7 @@ Some common-lisp-ish based on this idea
 ```lisp
 (defmacro do3 (some-code slice-any n u8) do-stuff)
 ```
+
 
 ## Generics
 ### Generic Functions
@@ -74,7 +76,7 @@ A zig style generic in lisp form could work:
 ```zig
 fn max(comptime T: type, a: T, b: T) T {...}
 ```
-This has potential and introduces a "type" type. Could be elegant?
+This has potential and introduces a `type` type. Could be elegant?
 To support currying we would need to ensure that type params are first. Otherwise you could curry a variable that conflicts with a type. Even if its solvable it overcomplicates it.
 
 
