@@ -1,0 +1,19 @@
+(quote lol)
+
+(def fact 
+  (lambda (n) 
+    (if (eq n 1) 
+     1 
+     (* n (fact (- n 1))))))
+
+(print (fact 5))
+
+(def loopprint
+  (lambda (n)
+    (if (eq n -1) 
+        nil
+        (progn
+         (print n)
+         (loopprint (- n 1))))))
+
+(loopprint 10)
