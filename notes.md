@@ -1,6 +1,6 @@
 # Notes
-
 Now that we have a basic lisp lets go through a few ideas.
+
 ## Slices
 Replace (cons 1 2) -> (1 . 2) to (slice 1 2 3) -> (1 2 3) slices have constant time access. They are in implementations pointers to an array with length and cap. Similar to golang's implementation but append will actually change the position if needed. so you don't have to weirdly assign it. 
 
@@ -18,9 +18,23 @@ floats as seen above
 addable: (integers, floats)
 any: literally anything i guess
 
+can be declared with
+```lisp
+(def addable (sum integers floats))
+; or without varargs although i think varargs are a feature i want
+(def addable (sum (integers floats)))
+```
+
 ### Function Types
 functions signatures are now like this:
+```lisp
+(lambda ((var1 type1) (var2 type2)))
+```
 have the parameters, their types, and the return type. All of these types can be sum types
+varargs are supported. 
+```lisp
+(lambda ((n u8) (str string) (va slice-u8))) ; example
+```
 
 ### Slice Types
 cons is replaced with slices probably
@@ -57,7 +71,7 @@ func (T addable) (n T, m T) return T
 ```
 How do we make this work with lisp??
 A zig style generic in lisp form could work:
-```
+```zig
 fn max(comptime T: type, a: T, b: T) T {...}
 ```
 This has potential and introduces a "type" type. Could be elegant?
@@ -88,3 +102,5 @@ To support currying we would need to ensure that type params are first. Otherwis
 ## Consts
 To make constants which is clearly valuable we use the def syntax but use const instead
 
+## Comments
+so far I am a big fan of the comma for comments syntax
