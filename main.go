@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"bufio"
 	"fmt"
 	"io"
@@ -25,23 +26,37 @@ func Run(line []rune, stack *Stack) any {
 		return res.Data
 }
 
+func EvenParens(str string) bool {
+	return strings.Count(str, "(") == strings.Count(str, ")")
+}
+
 func Repl() {
+	fmt.Println("Atlisp v0.01")
 	stack := Stack{}
 	stack.AddLayer(GenerateBuiltins())
 	reader := bufio.NewReader(os.Stdin)
 	for {
 //		fmt.Println(stack)
-		fmt.Print("> ")
-		line, err := reader.ReadString('\n')
-		if err != nil {
-			if err == io.EOF {
-				fmt.Println()
-				return
+		fmt.Print(" > ")
+		even_parens := false
+		var line string
+		for !even_parens {
+			tline, err := reader.ReadString('\n')
+			line += tline
+			if err != nil {
+				if err == io.EOF {
+					fmt.Println()
+					return
+				}
+				fmt.Println(err)
+				continue
 			}
-			fmt.Println(err)
-			fmt.Println("^^^^^^^^^^^")
-			continue
+			even_parens = EvenParens(line)
+			if !even_parens {
+				fmt.Print(".. ")
+			}
 		}
+
 //		fmt.Println(line)
 		code := []rune(line)
 		fmt.Println(Run(code, &stack))
@@ -84,6 +99,7 @@ func RunFile(filename string) {
 func main() {
 	if len(os.Args) <= 1 {
 		Repl()
+	} else {
+		RunFile(os.Args[1])
 	}
-	RunFile(os.Args[1])
 }

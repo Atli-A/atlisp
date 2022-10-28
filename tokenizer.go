@@ -159,7 +159,7 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 					Length: uint16(n),
 				}
 			}
-			res = append(res, Token{STRING, string(runes[i+1 : i+2+uint64(n)]), i, uint16(n + 1)})
+			res = append(res, Token{STRING, string(runes[i : i+2+uint64(n)]), i, uint16(n + 1)})
 			i += uint64(n) + 1
 
 		default: // SYMBOL

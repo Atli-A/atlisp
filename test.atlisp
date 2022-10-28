@@ -17,3 +17,26 @@
          (loopprint (- n 1))))))
 
 (loopprint 10)
+
+(print (quote Hello World))
+
+(def collatz 
+  (lambda (n) 
+    (print n)
+    (if (eq n 1)
+      1
+      (collatz
+         (if (eq (% n 2) 1)
+           (+ (* 3 n) 1)
+           (/ n 2))))))
+
+(print (quote (def collatz 
+  (lambda (n) 
+    (print n)
+    (if (eq n 1)
+      1
+      (collatz
+         (if (eq (% n 2) 1)
+           (+ (* 3 n) 1)
+           (/ n 2))))))))
+(collatz 27)

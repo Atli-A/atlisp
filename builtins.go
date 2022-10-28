@@ -10,7 +10,8 @@ var (
 		"+": add,
 		"-": subtract,
 		"*": multiply,
-		// TODO divide
+		"/": divide,
+		"%": mod,
 		"cons": cons,
 		"car":  car,
 		"cdr":  cdr,
@@ -76,6 +77,56 @@ func multiply(vars ...Var) (Var, RuntimeError) {
 		Data: mul,
 		Type: VarTypes.NUM,
 	}, RuntimeError{}
+}
+
+func divide(vars ...Var) (Var, RuntimeError) {
+	if len(vars) == 0 {
+		return Var{}, RuntimeError{
+			errors.New("divide requires at least on value"), 0, 0,
+		}
+	} else if len(vars) == 1 {
+		if matches, err := TypeMatches(vars[0], VarTypes.NUM); !matches {
+			return Var{}, err
+		}
+		return Var{
+			Data: int64(1)/vars[0].Data.(int64),
+			Type: VarTypes.NUM,
+		}, RuntimeError{}
+	} else {
+		for _, v := range vars {
+			if matches, err := TypeMatches(v, VarTypes.NUM); !matches {
+				return Var{}, err
+			}
+		}
+		start := vars[0].Data.(int64)
+		for _, v := range vars[1:] {
+			start /= v.Data.(int64)
+		}
+		return Var{
+			Data: start,
+			Type: VarTypes.NUM,
+		}, RuntimeError{}
+	}
+	
+}
+
+func mod(vars ...Var) (Var, RuntimeError) {
+	if len(vars) != 2 {
+		return Var{}, RuntimeError{
+			errors.New("% requires exactly 2 arguments"), 0, 0,
+		}
+	}
+	if matches, err := TypeMatches(vars[0], VarTypes.NUM); !matches {
+		return Var{}, err
+	}
+	if matches, err := TypeMatches(vars[1], VarTypes.NUM); !matches {
+		return Var{}, err
+	}
+	return Var{
+		Data: vars[0].Data.(int64) % vars[1].Data.(int64),
+		Type: VarTypes.NUM,
+	}, RuntimeError{}
+
 }
 
 func cons(vars ...Var) (Var, RuntimeError) {

@@ -115,3 +115,21 @@ func Def(name Expression, expr Expression, local Stack) (Var, RuntimeError) {
 	local[len(local)-1][str] = evalled
 	return evalled, RE
 }
+
+func Set(name Expression, expr Expression, local Stack) (Var, RuntimeError) {
+	if name.Value.Type != VarTypes.SYMBOL {
+		return Var{}, RuntimeError{
+			errors.New("No symbol given for definition"), 0, 0,
+		}
+	}
+	str := name.Value.Data.(string)
+	if found, err := local.Lookup(str); err == nil {
+		return Var{}, RuntimeError{
+			errors.New("Cannot set variable that does not exist"), 0, 0,
+		}
+		_ = found
+	}
+	evalled, RE := Eval(&expr, local)
+	local[len(local)-1][str] = evalled
+	return evalled, RE
+}
