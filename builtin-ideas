@@ -1,0 +1,27 @@
+// Syntax
+[]T       = slice of type T
+expr      = expression has children and stuff
+expr->T   = expression that evaluates to T
+(t1 | t2) = sum type of t1 and t2
+(t1, t2)  = tuple of types t1, t2 like an anonymous struct
+
+
+// (name (param types) return-type)
+(cast ((T type) (input any)) T)
+// func
+(fn (((symbol, type)...) rt type) (func ((symbol type)...) rt))
+// addition
+(+ ((T addable) (n1 T) (n2 T)) T)
+// if
+(if ((rt type) ((cond expr->bool) (expr1 expr->rt) (expr2 expr->rt))) rt)
+// progn
+(progn ((rt type) (exprs []expr->any) (expr->rt)) rt)
+
+// macro 
+(macro (exprs [](symbol, type)) expr->any)
+
+// quote
+(quote ((input T)) input.type) // this should work but generally specifying a type param is better
+
+// let
+(let ((assigns [](symbol, expr->any)) (actions []expr->any)) any)

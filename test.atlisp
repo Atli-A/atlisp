@@ -1,7 +1,7 @@
 (quote lol)
 
 (def fact 
-  (lambda (n) 
+  (fn (n) 
     (if (eq n 1) 
      1 
      (* n (fact (- n 1))))))
@@ -9,7 +9,7 @@
 (print (fact 5))
 
 (def loopprint
-  (lambda (n)
+  (fn (n)
     (if (eq n -1) 
         nil
         (progn
@@ -21,7 +21,7 @@
 (print (quote Hello World))
 
 (def collatz 
-  (lambda (n) 
+  (fn (n) 
     (print n)
     (if (eq n 1)
       1
@@ -30,8 +30,17 @@
            (+ (* 3 n) 1)
            (/ n 2))))))
 
-(print (quote (def collatz 
-  (lambda (n) 
+(def printlist 
+ (fn (lst) 
+  (if (eq lst nil)
+    nil
+    (progn
+      (print (car lst))
+      (printlist (cdr lst))))))
+
+
+(printlist (quote (def collatz 
+  (fn (n) 
     (print n)
     (if (eq n 1)
       1

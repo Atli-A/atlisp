@@ -1,0 +1,9 @@
+(def loop 
+  (fn (n max) 
+    (if (eq n max)
+       max
+       (progn
+	  (print n)
+	  (loop (+ n 1) max)))))
+
+(loop 0 10)

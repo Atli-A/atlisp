@@ -55,7 +55,7 @@ func (c Cons) String() string {
 var (
 	SpecialFormNames = []string{
 		"quote",
-		"lambda",
+		"fn",
 		"progn",
 		"def",
 		"if",
@@ -137,7 +137,7 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 			case "progn":
 				// TODO ensure except 0 args
 				return Progn(expr.Children[1:], local)
-			case "lambda":
+			case "fn":
 				// TODO ensure right number of args
 				return Lambda(expr.Children[1], expr.Children[2:])
 			case "def":
