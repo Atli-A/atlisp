@@ -41,6 +41,8 @@ Here the `fn` keyword is used to create a function. To call this function we wou
 ```
 
 ### Keywords / Special Forms
+`eq` checks for equality
+
 `progn` evaluate a series of expressions 
 
 `fn` create a function
@@ -48,6 +50,13 @@ Here the `fn` keyword is used to create a function. To call this function we wou
 `def` define a variable
 
 `quote` return a symbol or variable unmodified or return an expression as a list of symbols
+
+`if` takes an expression which it evaluates. If the expression is truthy it evaluates the next expression otherwise it doesn't evaluate that one and instead evaluates the other.
+For example: 
+```
+(if (eq 1 1) "this" "that")
+```
+evaluates to "this" and "that" is never evaluated
 
 ### Future work
 - Add `eval`
