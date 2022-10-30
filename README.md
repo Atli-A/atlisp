@@ -3,8 +3,18 @@ atlisp is a minimal lisp that I created in my free time
 
 The name is portmanteua of atli and lisp
 
+
+## Build
+After cloning the repo you can run. 
+```bash
+go build
+```
+
 ## Usage
-To run a REPL of atlisp use ./atlisp.
+Prequisites: Build
+
+To run a REPL of atlisp use ./atlisp
+
 To run a file with atlisp use ./atlisp <filename>
 
 ## Tutorial 
@@ -41,22 +51,26 @@ Here the `fn` keyword is used to create a function. To call this function we wou
 ```
 
 ### Keywords / Special Forms
-`eq` checks for equality
+`eq`: checks for equality
 
-`progn` evaluate a series of expressions 
+`progn`: evaluate a series of expressions and returns the output of the last one.
 
-`fn` create a function
+`fn`: creates a function as seen earlier
 
-`def` define a variable
+`def`: define a variable as seen earlier
 
-`quote` return a symbol or variable unmodified or return an expression as a list of symbols
-
-`if` takes an expression which it evaluates. If the expression is truthy it evaluates the next expression otherwise it doesn't evaluate that one and instead evaluates the other.
-For example: 
+`quote`: return a symbol or variable unmodified or return an expression as a list of symbols
+```lisp
+ > (quote test)
+test
 ```
+`if`: takes an expression which it evaluates. If the expression is truthy it evaluates the next expression otherwise it doesn't evaluate that one and instead evaluates the other.
+For example: 
+```lisp
 (if (eq 1 1) "this" "that")
 ```
-evaluates to "this" and "that" is never evaluated
+evaluates to "this" and "that" is never evaluated.
+
 
 ### Future work
 - Add `eval`
