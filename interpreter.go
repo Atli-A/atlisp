@@ -59,6 +59,7 @@ var (
 		"progn",
 		"def",
 		"if",
+		"eval",
 	}
 )
 
@@ -147,6 +148,7 @@ func Eval(expr *Expression, local Stack) (Var, RuntimeError) {
 				// TODO ensure right number of args
 				return If(expr.Children[1], expr.Children[2], 
 							expr.Children[3], local)
+
 			}
 
 		default:

@@ -133,3 +133,7 @@ func Set(name Expression, expr Expression, local Stack) (Var, RuntimeError) {
 	local[len(local)-1][str] = evalled
 	return evalled, RE
 }
+	
+func Compile(filename Expression, name Expression) (Var, RuntimeError) {
+	return Var{}, RuntimeError{}
+}
