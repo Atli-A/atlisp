@@ -132,7 +132,7 @@ func Def(name Expression, expr Expression, local Stack) (Var, RuntimeError) {
 	}
 	evalled, RE := Eval(&expr, local)
 	local[len(local)-1][str] = evalled
-	return evalled, RE
+	return name.Value, RE
 }
 
 func Set(name Expression, expr Expression, local Stack) (Var, RuntimeError) {

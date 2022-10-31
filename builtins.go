@@ -199,6 +199,8 @@ func eq(vars ...Var) (Var, RuntimeError) {
 	}, RuntimeError{}
 }
 
+//func isnil(vars ...Var) (Var, RuntimeError) {}
+
 func GenerateBuiltins() map[string]Var {
 	res := make(map[string]Var)
 	for k, v := range builtins {

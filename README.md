@@ -32,7 +32,7 @@ To call a function use the following syntax `(function_name parameter1 parameter
 Variables and functions share a namespace. To define a variable use the following syntax
 ```lisp
  > (def myvar "a string")
-"a string"
+myvar
  > myvar
 "a string"
 ```
