@@ -1,11 +1,13 @@
 # Atlisp
-atlisp is a minimal lisp that I created in my free time
+Atlisp is a minimal lisp that I created in my free time
 
-The name is portmanteua of atli and lisp
+The name is a portmanteau of atli and lisp.
 
 
 ## Build
-After cloning the repo you can run. 
+Requires go 1.18 or above.
+
+After cloning the repo you can run:
 ```bash
 go build
 ```
