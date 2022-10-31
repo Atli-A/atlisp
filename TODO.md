@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] Support for question marks, hyphens, underscores, exclamation marks in symbols correctly
+- [x] Support for question marks, hyphens, underscores, exclamation marks in symbols correctly
 - [ ] `compile` and `export`
 - [ ] fix stack so it deals with namespaces
 - [ ] internal list to Expression Conversion should be better

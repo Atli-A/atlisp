@@ -23,6 +23,13 @@ const (
 	SPECIALFORM TokenType = iota
 )
 
+var (
+	SymbolSpecialChars = []rune{
+		'_', '-', '+', '=', '*', '&', '^', 
+		'%', '$', '#', '@', '!', '?', '.',
+	}
+)
+
 type Token struct {
 	Type   TokenType
 	Data   any
@@ -164,7 +171,7 @@ func Tokenize(runes []rune) ([]Token, TokenizationError) {
 
 		default: // SYMBOL
 			n := ReadUntilFalse(runes[i:], func(r rune) bool {
-				return (unicode.IsDigit(r) || unicode.IsLetter(r)) && !unicode.IsSpace(r)
+				return (unicode.IsDigit(r) || unicode.IsLetter(r) || Contains[rune](SymbolSpecialChars, r)) && !unicode.IsSpace(r)
 			})
 			if n == 0 { // why does this work omg TODO
 				n = 1

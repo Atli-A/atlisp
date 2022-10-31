@@ -39,6 +39,25 @@ func sliceToConsQuote(exprs []*Expression) (Var, RuntimeError) {
 	}, RuntimeError{}
 }
 
+func ConsQuoteToExpr(input Var) ([]*Expression, error) {
+	res := make([]*Expression, 0)
+	current := input
+	for {
+		if current.Type != VarTypes.CONS {
+			return nil, errors.New("Requires cons quote")
+		}
+		if current.Data.(Cons).First.Type == VarTypes.CONS {
+			// somethin
+		} else {
+			
+		}
+
+		
+	}
+
+	return res, nil
+}
+
 func Quote(expr Expression) (Var, RuntimeError) { // TODO handle expression
 	if expr.Children == nil {
 		return expr.Value, RuntimeError{}
